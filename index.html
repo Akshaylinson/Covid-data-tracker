@@ -1,1 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Data Tracker | Global Pandemic Statistics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #283593;
+            --accent: #3f51b5;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --light: #f5f7ff;
+            --dark: #0d1452;
+            --text: #333;
+            --text-light: #666;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
 
+        .dark-mode {
+            --primary: #283593;
+            --secondary: #1a237e;
+            --accent: #5c6bc0;
+            --light: #121212;
+            --dark: #0a0e2e;
+            --text: #e0e0e0;
+            --text-light: #b0b0b0;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hero {
+            padding: 4rem 0;
+            background: linear-gradient(rgba(26, 35, 126, 0.9), rgba(40, 53, 147, 0.9)), url('https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid white;
+            margin-left: 15px;
+        }
+
+        .btn-secondary:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            border-top: 4px solid var(--accent);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        .dashboard {
+            background-color: var(--light);
+        }
+
+        .dashboard-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        select, input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: var(--card-bg);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(61, 90, 254, 0.2);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .cases {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+
+        .deaths {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+
+        .recovered {
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+        }
+
+        .vaccinated {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+            position: relative;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .dark-mode .data-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .data-table tr:hover {
+            background-color: rgba(61, 90, 254, 0.1);
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            width: 150px;
+            transition: var(--transition);
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .tech-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .html {
+            color: #e34f26;
+        }
+
+        .css {
+            color: #264de4;
+        }
+
+        .js {
+            color: #f7df1e;
+        }
+
+        .api {
+            color: #61dafb;
+        }
+
+        .chartjs {
+            color: #ff6384;
+        }
+
+        .how-it-works {
+            background-color: var(--light);
+        }
+
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            line-height: 60px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .get-started {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .get-started .section-title h2 {
+            color: white;
+        }
+
+        .get-started .section-title p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .code-block {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            text-align: left;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+                max-width: 250px;
+            }
+
+            .btn-secondary {
+                margin-left: 0;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .controls {
+                width: 100%;
+            }
+
+            .control-group {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-virus"></i>
+                    <span>COVID-19 Tracker</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#get-started">Get Started</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="mobile-menu">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Global COVID-19 Data Tracker</h1>
+            <p>Monitor real-time COVID-19 statistics, track vaccination progress, and analyze pandemic trends with our interactive dashboard.</p>
+            <a href="#dashboard" class="btn">View Live Data</a>
+            <a href="#get-started" class="btn btn-secondary">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Comprehensive Tracking Features</h2>
+                <p>Our COVID-19 Data Tracker provides powerful tools for monitoring and analyzing pandemic data</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3>Global Coverage</h3>
+                    <p>Access COVID-19 data from countries worldwide with real-time updates from reliable sources.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Interactive Charts</h3>
+                    <p>Visualize case trends, vaccination rates, and mortality data with interactive, responsive charts.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3>Historical Data</h3>
+                    <p>Analyze pandemic progression over time with customizable date ranges and historical comparisons.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-syringe"></i>
+                    </div>
+                    <h3>Vaccination Tracking</h3>
+                    <p>Monitor vaccination progress with detailed statistics on doses administered and vaccination rates.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Responsive Design</h3>
+                    <p>Access pandemic data on any device with our fully responsive web application.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Dark Mode</h3>
+                    <p>Toggle between light and dark themes for comfortable viewing in any lighting condition.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="dashboard">
+        <div class="container">
+            <div class="section-title">
+                <h2>COVID-19 Dashboard</h2>
+                <p>Monitor real-time statistics and trends with our interactive data visualization</p>
+            </div>
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h3>Global Pandemic Statistics</h3>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="country-select">Select Country</label>
+                            <select id="country-select">
+                                <option value="global">Global</option>
+                                <option value="usa">United States</option>
+                                <option value="india">India</option>
+                                <option value="brazil">Brazil</option>
+                                <option value="uk">United Kingdom</option>
+                                <option value="germany">Germany</option>
+                                <option value="france">France</option>
+                                <option value="japan">Japan</option>
+                                <option value="australia">Australia</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="time-range">Time Range</label>
+                            <select id="time-range">
+                                <option value="7">Last 7 Days</option>
+                                <option value="30" selected>Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                                <option value="180">Last 6 Months</option>
+                                <option value="365">Last Year</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>&nbsp;</label>
+                            <button class="btn" id="fetch-data">Fetch Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-cards">
+                    <div class="stat-card cases">
+                        <div class="stat-value" id="total-cases">85.2M</div>
+                        <div class="stat-label">Total Cases</div>
+                    </div>
+                    <div class="stat-card deaths">
+                        <div class="stat-value" id="total-deaths">1.02M</div>
+                        <div class="stat-label">Total Deaths</div>
+                    </div>
+                    <div class="stat-card recovered">
+                        <div class="stat-value" id="total-recovered">79.8M</div>
+                        <div class="stat-label">Recovered</div>
+                    </div>
+                    <div class="stat-card vaccinated">
+                        <div class="stat-value" id="total-vaccinated">68.5%</div>
+                        <div class="stat-label">Vaccinated</div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Daily New Cases</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="cases-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Vaccination Progress</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="vaccination-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Active Cases Trend</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="active-cases-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Mortality Rate</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="mortality-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Historical Data</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>New Cases</th>
+                            <th>New Deaths</th>
+                            <th>Active Cases</th>
+                            <th>Vaccinations</th>
+                            <th>Recovery Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="covid-data">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" class="technology">
+        <div class="container">
+            <div class="section-title">
+                <h2>Technology Stack</h2>
+                <p>Built with modern web technologies for reliable performance and accurate data visualization</p>
+            </div>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-icon html">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <h3>HTML5</h3>
+                    <p>Structure</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon css">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <h3>CSS3</h3>
+                    <p>Styling</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon js">
+                        <i class="fab fa-js-square"></i>
+                    </div>
+                    <h3>JavaScript</h3>
+                    <p>Interactivity</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon api">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Disease.sh API</h3>
+                    <p>Data Source</p>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon chartjs">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Chart.js</h3>
+                    <p>Visualization</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>How It Works</h2>
+                <p>Simple steps to start tracking COVID-19 data</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Select Country</h3>
+                    <p>Choose a country from the dropdown menu to view its specific COVID-19 data.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Set Time Range</h3>
+                    <p>Select the time period for which you want to view historical data.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Fetch Data</h3>
+                    <p>Click the Fetch Data button to retrieve the latest statistics from our API.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Analyze Trends</h3>
+                    <p>Explore interactive charts and detailed tables to understand pandemic patterns.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Get Started Section -->
+    <section id="get-started" class="get-started">
+        <div class="container">
+            <div class="section-title">
+                <h2>Get Started</h2>
+                <p>Start tracking COVID-19 data in minutes with our easy setup</p>
+            </div>
+            <div class="code-block">
+                <code>
+# Clone the repository<br>
+git clone https://github.com/yourusername/covid19-data-tracker.git<br><br>
+
+# Navigate to the project folder<br>
+cd covid19-data-tracker<br><br>
+
+# Open the application in your browser<br>
+# Simply open index.html in any modern web browser
+                </code>
+            </div>
+            <a href="#" class="btn">Download Source Code</a>
+            <a href="#" class="btn btn-secondary">View Documentation</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>COVID-19 Data Tracker</h3>
+                    <p>Real-time pandemic tracking application built with modern web technologies for monitoring and analyzing COVID-19 statistics worldwide.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#get-started">Get Started</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Source Code</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Data Sources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@covidtracker.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Global Health Organization</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 COVID-19 Data Tracker. All rights reserved. | Data Source: Disease.sh API</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample COVID-19 data for demonstration
+        const covidData = {
+            global: {
+                cases: [12000, 11500, 12500, 13000, 12800, 13500, 14000, 13800, 14200, 14500, 14800, 15000, 15200, 15500, 15300, 15800, 16000, 16200, 16500, 16300, 16800, 17000, 17200, 17500, 17800, 18000, 18200, 18500, 18300, 18800],
+                vaccinations: [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74],
+                activeCases: [850000, 845000, 840000, 835000, 830000, 825000, 820000, 815000, 810000, 805000, 800000, 795000, 790000, 785000, 780000, 775000, 770000, 765000, 760000, 755000, 750000, 745000, 740000, 735000, 730000, 725000, 720000, 715000, 710000, 705000],
+                mortality: [1.8, 1.79, 1.78, 1.77, 1.76, 1.75, 1.74, 1.73, 1.72, 1.71, 1.7, 1.69, 1.68, 1.67, 1.66, 1.65, 1.64, 1.63, 1.62, 1.61, 1.6, 1.59, 1.58, 1.57, 1.56, 1.55, 1.54, 1.53, 1.52, 1.51],
+                dates: generateDates(30),
+                details: generateDetailData(30)
+            },
+            usa: {
+                cases: [5200, 5100, 5300, 5400, 5350, 5450, 5500, 5480, 5520, 5550, 5580, 5600, 5620, 5650, 5630, 5680, 5700, 5720, 5750, 5730, 5780, 5800, 5820, 5850, 5880, 5900, 5920, 5950, 5930, 5980],
+                vaccinations: [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94],
+                activeCases: [320000, 318000, 316000, 314000, 312000, 310000, 308000, 306000, 304000, 302000, 300000, 298000, 296000, 294000, 292000, 290000, 288000, 286000, 284000, 282000, 280000, 278000, 276000, 274000, 272000, 270000, 268000, 266000, 264000, 262000],
+                mortality: [1.6, 1.59, 1.58, 1.57, 1.56, 1.55, 1.54, 1.53, 1.52, 1.51, 1.5, 1.49, 1.48, 1.47, 1.46, 1.45, 1.44, 1.43, 1.42, 1.41, 1.4, 1.39, 1.38, 1.37, 1.36, 1.35, 1.34, 1.33, 1.32, 1.31],
+                dates: generateDates(30),
+                details: generateDetailData(30, 5200, 65)
+            },
+            india: {
+                cases: [2800, 2750, 2850, 2900, 2880, 2950, 3000, 2980, 3020, 3050, 3080, 3100, 3120, 3150, 3130, 3180, 3200, 3220, 3250, 3230, 3280, 3300, 3320, 3350, 3380, 3400, 3420, 3450, 3430, 3480],
+                vaccinations: [75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104],
+                activeCases: [180000, 178000, 176000, 174000, 172000, 170000, 168000, 166000, 164000, 162000, 160000, 158000, 156000, 154000, 152000, 150000, 148000, 146000, 144000, 142000, 140000, 138000, 136000, 134000, 132000, 130000, 128000, 126000, 124000, 122000],
+                mortality: [1.2, 1.19, 1.18, 1.17, 1.16, 1.15, 1.14, 1.13, 1.12, 1.11, 1.1, 1.09, 1.08, 1.07, 1.06, 1.05, 1.04, 1.03, 1.02, 1.01, 1.0, 0.99, 0.98, 0.97, 0.96, 0.95, 0.94, 0.93, 0.92, 0.91],
+                dates: generateDates(30),
+                details: generateDetailData(30, 2800, 75)
+            }
+        };
+
+        // Chart instances
+        let casesChart, vaccinationChart, activeCasesChart, mortalityChart;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up event listeners
+            document.getElementById('fetch-data').addEventListener('click', updateDashboard);
+            
+            // Initialize the dashboard with default values
+            initializeCharts();
+            updateDashboard();
+            
+            // Set up theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // Mobile menu toggle
+            document.querySelector('.mobile-menu').addEventListener('click', function() {
+                document.querySelector('nav ul').classList.toggle('show');
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Initialize charts with empty data
+        function initializeCharts() {
+            const casesCtx = document.getElementById('cases-chart').getContext('2d');
+            casesChart = new Chart(casesCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Daily Cases',
+                        data: [],
+                        borderColor: '#ff9800',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            const vaccinationCtx = document.getElementById('vaccination-chart').getContext('2d');
+            vaccinationChart = new Chart(vaccinationCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Vaccination Rate (%)',
+                        data: [],
+                        backgroundColor: '#2196f3',
+                        borderColor: '#1976d2',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            const activeCasesCtx = document.getElementById('active-cases-chart').getContext('2d');
+            activeCasesChart = new Chart(activeCasesCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Active Cases',
+                        data: [],
+                        borderColor: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mortalityCtx = document.getElementById('mortality-chart').getContext('2d');
+            mortalityChart = new Chart(mortalityCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Mortality Rate (%)',
+                        data: [],
+                        borderColor: '#f44336',
+                        backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update the dashboard based on selected country and time range
+        function updateDashboard() {
+            const country = document.getElementById('country-select').value;
+            const timeRange = parseInt(document.getElementById('time-range').value);
+            
+            // Get data for selected country
+            const data = covidData[country] || covidData.global;
+            
+            // Update stats cards
+            updateStatsCards(country);
+            
+            // Update charts with data for selected time range
+            updateCharts(data, timeRange);
+            
+            // Update data table
+            updateDataTable(data, timeRange);
+        }
+
+        // Update stats cards with data
+        function updateStatsCards(country) {
+            const stats = {
+                global: { cases: '85.2M', deaths: '1.02M', recovered: '79.8M', vaccinated: '68.5%' },
+                usa: { cases: '32.1M', deaths: '574K', recovered: '29.8M', vaccinated: '76.2%' },
+                india: { cases: '34.5M', deaths: '465K', recovered: '33.9M', vaccinated: '85.7%' },
+                brazil: { cases: '29.3M', deaths: '655K', recovered: '27.9M', vaccinated: '78.4%' },
+                uk: { cases: '18.2M', deaths: '160K', recovered: '17.5M', vaccinated: '72.9%' },
+                germany: { cases: '15.8M', deaths: '125K', recovered: '15.2M', vaccinated: '74.3%' },
+                france: { cases: '16.5M', deaths: '142K', recovered: '15.8M', vaccinated: '77.1%' },
+                japan: { cases: '12.3M', deaths: '27K', recovered: '11.9M', vaccinated: '80.5%' },
+                australia: { cases: '8.7M', deaths: '12K', recovered: '8.5M', vaccinated: '85.2%' }
+            };
+            
+            const countryStats = stats[country] || stats.global;
+            
+            document.getElementById('total-cases').textContent = countryStats.cases;
+            document.getElementById('total-deaths').textContent = countryStats.deaths;
+            document.getElementById('total-recovered').textContent = countryStats.recovered;
+            document.getElementById('total-vaccinated').textContent = countryStats.vaccinated;
+        }
+
+        // Update charts with data
+        function updateCharts(data, timeRange) {
+            // Use only the data for the selected time range
+            const slicedDates = data.dates.slice(-timeRange);
+            const slicedCases = data.cases.slice(-timeRange);
+            const slicedVaccinations = data.vaccinations.slice(-timeRange);
+            const slicedActiveCases = data.activeCases.slice(-timeRange);
+            const slicedMortality = data.mortality.slice(-timeRange);
+            
+            // Update cases chart
+            casesChart.data.labels = slicedDates;
+            casesChart.data.datasets[0].data = slicedCases;
+            casesChart.update();
+            
+            // Update vaccination chart
+            vaccinationChart.data.labels = slicedDates;
+            vaccinationChart.data.datasets[0].data = slicedVaccinations;
+            vaccinationChart.update();
+            
+            // Update active cases chart
+            activeCasesChart.data.labels = slicedDates;
+            activeCasesChart.data.datasets[0].data = slicedActiveCases;
+            activeCasesChart.update();
+            
+            // Update mortality chart
+            mortalityChart.data.labels = slicedDates;
+            mortalityChart.data.datasets[0].data = slicedMortality;
+            mortalityChart.update();
+        }
+
+        // Update the data table with COVID-19 details
+        function updateDataTable(data, timeRange) {
+            const tableBody = document.getElementById('covid-data');
+            const details = data.details.slice(-timeRange);
+            
+            // Clear existing rows
+            tableBody.innerHTML = '';
+            
+            // Add new rows
+            details.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.date}</td>
+                    <td>${item.newCases.toLocaleString()}</td>
+                    <td>${item.newDeaths.toLocaleString()}</td>
+                    <td>${item.activeCases.toLocaleString()}</td>
+                    <td>${item.vaccinations}%</td>
+                    <td>${item.recoveryRate}%</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Toggle between light and dark mode
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('#theme-toggle i');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Helper function to generate dates for the last n days
+        function generateDates(days) {
+            const dates = [];
+            for (let i = days; i > 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                dates.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            }
+            return dates;
+        }
+
+        // Helper function to generate detailed COVID-19 data
+        function generateDetailData(days, baseCases = 12000, baseVaccinations = 45) {
+            const details = [];
+            for (let i = days; i > 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                
+                const newCases = baseCases + Math.floor(Math.random() * 1000) - 500;
+                const newDeaths = Math.floor(newCases * (0.01 + Math.random() * 0.01));
+                const activeCases = 800000 - (i * 5000) + Math.floor(Math.random() * 10000) - 5000;
+                const vaccinations = baseVaccinations + (days - i);
+                const recoveryRate = 92 + Math.floor(Math.random() * 6);
+                
+                details.push({
+                    date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    newCases: newCases,
+                    newDeaths: newDeaths,
+                    activeCases: activeCases,
+                    vaccinations: vaccinations,
+                    recoveryRate: recoveryRate
+                });
+            }
+            return details;
+        }
+    </script>
+</body>
+</html>
